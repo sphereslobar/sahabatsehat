@@ -731,15 +731,19 @@ class RecruitmentApp {
         });
 
         if (typeof QRCode !== 'undefined') {
-            QRCode.toCanvas(qrContainer, qrData, {
-                width: CONFIG.APP.QR_CODE.SIZE,
-                errorCorrectionLevel: CONFIG.APP.QR_CODE.ERROR_CORRECTION
-            }, (error) => {
-                if (error) {
-                    console.error('QR Code generation error:', error);
-                    qrContainer.innerHTML = '<p class="text-error">Gagal membuat QR Code</p>';
-                }
-            });
+            try {
+                new QRCode(qrContainer, {
+                    text: qrData,
+                    width: CONFIG.APP.QR_CODE.SIZE,
+                    height: CONFIG.APP.QR_CODE.SIZE,
+                    colorDark: "#000000",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+            } catch (error) {
+                console.error('QR Code generation error:', error);
+                qrContainer.innerHTML = '<p class="text-error">Gagal membuat QR Code</p>';
+            }
         } else {
             qrContainer.innerHTML = '<p class="text-error">QR Code library tidak tersedia</p>';
         }
