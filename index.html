@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifikasi Kandidat - Sahabat Sehat</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-user-check"></i>
+                <h1>Sahabat Sehat</h1>
+            </div>
+            <p class="subtitle">Platform Verifikasi Kandidat</p>
+        </header>
+
+        <!-- Login Section -->
+        <section id="loginSection" class="section active">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <h2>Login Verifikasi</h2>
+                    <p>Masukkan data Anda untuk melanjutkan</p>
+                </div>
+                <form id="loginForm" class="form">
+                    <div class="form-group">
+                        <label for="nomorHP">Nomor HP/WhatsApp Aktif</label>
+                        <div class="input-group">
+                            <i class="fas fa-phone"></i>
+                            <input type="tel" id="nomorHP" name="nomorHP" placeholder="08xxxxxxxxxx" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="tglLahir">Tanggal Lahir</label>
+                        <div class="date-format-hint">
+                            <small class="format-text">📅 Format: DD/MM/YYYY (contoh: 12/07/1984)</small>
+                        </div>
+                        <div class="input-group">
+                            <i class="fas fa-calendar"></i>
+                            <input type="text" id="tglLahir" name="tglLahir" placeholder="DD/MM/YYYY" maxlength="10" required>
+                            <div class="date-picker-toggle" id="datePickerToggle">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                        </div>
+                        <div class="custom-date-picker" id="customDatePicker">
+                            <div class="date-picker-header">
+                                <button type="button" class="date-nav-btn" id="prevMonth">‹</button>
+                                <span class="current-month" id="currentMonth"></span>
+                                <button type="button" class="date-nav-btn" id="nextMonth">›</button>
+                            </div>
+                            <div class="date-picker-grid" id="dateGrid"></div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-arrow-right"></i>
+                        Masuk
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Data Entry Section -->
+        <section id="dataEntrySection" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-upload"></i>
+                    <h2>Lengkapi Data Anda</h2>
+                    <p>Upload dokumen dan foto untuk verifikasi</p>
+                </div>
+                <form id="dataEntryForm" class="form">
+                    <div class="form-group">
+                        <label for="nik">NIK (Nomor Induk Kependudukan)</label>
+                        <div class="input-group">
+                            <i class="fas fa-id-card"></i>
+                            <input type="text" id="nik" name="nik" placeholder="16 digit NIK" maxlength="16" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ktpFile">Upload KTP atau Surat Domisili</label>
+                        <div class="file-upload">
+                            <input type="file" id="ktpFile" name="ktpFile" accept="image/*,.pdf" required>
+                            <div class="file-upload-display">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Pilih file atau drag & drop</span>
+                                <small>Format: JPG, PNG, PDF (Max 5MB)</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="selfieFile">Upload Foto Selfie</label>
+                        <div class="file-upload">
+                            <input type="file" id="selfieFile" name="selfieFile" accept="image/*" required>
+                            <div class="file-upload-display">
+                                <i class="fas fa-camera"></i>
+                                <span>Pilih foto selfie</span>
+                                <small>Format: JPG, PNG (Max 3MB)</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="showSection('loginSection')">
+                            <i class="fas fa-arrow-left"></i>
+                            Kembali
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i>
+                            Simpan Data
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Profile Display Section -->
+        <section id="profileSection" class="section">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-user"></i>
+                    <h2>Profil Kandidat</h2>
+                    <p>Informasi dan data verifikasi Anda</p>
+                </div>
+                <div id="profileData" class="profile-data">
+                    <!-- Profile information will be populated here -->
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="downloadQR()">
+                        <i class="fas fa-download"></i>
+                        Download QR Code
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Loading Overlay -->
+        <div id="loadingOverlay" class="loading-overlay">
+            <div class="loading-spinner">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Memproses data...</p>
+            </div>
+        </div>
+
+        <!-- Error Modal -->
+        <div id="errorModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Peringatan</h3>
+                </div>
+                <div class="modal-body">
+                    <p id="errorMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="closeModal()">OK</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Modal -->
+        <div id="successModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Berhasil</h3>
+                </div>
+                <div class="modal-body">
+                    <p id="successMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" onclick="closeModal()">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <!-- Google APIs -->
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
+    <!-- QR Code Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
+    
+    <!-- App Scripts -->
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html> 
