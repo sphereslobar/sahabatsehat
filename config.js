@@ -27,7 +27,8 @@ const CONFIG = {
             LOKASI_TEST: 'Y',   // Test location column (index 24) - will be added later
             KTP_URL: 'Z',       // KTP/Domisili document URL column (index 25) - will be added later
             SELFIE_URL: 'AA',   // Selfie photo URL column (index 26) - will be added later
-            STATUS: 'AB'        // Status column (index 27) - will be added later
+            STATUS: 'AB',       // Status column (index 27) - will be added later
+            ENCRYPTED_ID: 'AC'  // Encrypted ID column (index 28) - combination of NIK and JADWAL_TEST
         }
     },
 
@@ -103,6 +104,54 @@ const CONFIG = {
 
 // Utility functions for configuration
 const ConfigUtils = {
+    /**
+     * Encrypt data using a simple but reversible encryption
+     * Note: This is not cryptographically secure, but sufficient for basic obfuscation
+     */
+    encryptData: function(data) {
+        try {
+            // Create a base string from data
+            const baseString = typeof data === 'object' ? JSON.stringify(data) : String(data);
+            
+            // Convert to Base64 and reverse it
+            const base64 = btoa(baseString);
+            const reversed = base64.split('').reverse().join('');
+            
+            // Add a simple timestamp-based salt
+            const salt = Date.now().toString(36);
+            const encrypted = salt + '_' + reversed;
+            
+            return encrypted;
+        } catch (error) {
+            console.error('Encryption error:', error);
+            return null;
+        }
+    },
+
+    /**
+     * Decrypt the encrypted data
+     */
+    decryptData: function(encrypted) {
+        try {
+            // Remove the salt
+            const [, reversedBase64] = encrypted.split('_');
+            
+            // Reverse back and decode
+            const base64 = reversedBase64.split('').reverse().join('');
+            const decrypted = atob(base64);
+            
+            // Try parsing as JSON if possible
+            try {
+                return JSON.parse(decrypted);
+            } catch {
+                return decrypted;
+            }
+        } catch (error) {
+            console.error('Decryption error:', error);
+            return null;
+        }
+    },
+
     /**
      * Get the range for reading data from Google Sheets
      */

@@ -426,7 +426,8 @@ class RecruitmentApp {
                             lokasiTest: row[24] || '', // Column Y - Test location (empty for now)
                             ktpUrl: row[25] || '',     // Column Z - KTP URL (empty for now)
                             selfieUrl: row[26] || '',  // Column AA - Selfie URL (empty for now)
-                            status: row[27] || ''      // Column AB - Status (empty for now)
+                            status: row[27] || '',     // Column AB - Status (empty for now)
+                            encryptedId: row[28] || ''   // Column AC - Encrypted ID
                         };
                     }
                 }
@@ -639,6 +640,15 @@ class RecruitmentApp {
 
     async updateUserInSheets() {
         try {
+            // Generate encrypted ID from NIK and JADWAL_TEST
+            const dataToEncrypt = {
+                nik: this.currentUser.nik,
+                jadwalTest: this.currentUser.jadwalTest || 'unscheduled',
+                timestamp: Date.now()
+            };
+            const encryptedId = ConfigUtils.encryptData(dataToEncrypt);
+            this.currentUser.encryptedId = encryptedId;
+
             const range = ConfigUtils.getWriteRange(this.currentUser.rowIndex);
             const values = [[
                 this.currentUser.nik,           // Column W - NIK
@@ -646,7 +656,8 @@ class RecruitmentApp {
                 this.currentUser.lokasiTest,    // Column Y - Test location
                 this.currentUser.ktpUrl,        // Column Z - KTP URL
                 this.currentUser.selfieUrl,     // Column AA - Selfie URL
-                this.currentUser.status         // Column AB - Status
+                this.currentUser.status,        // Column AB - Status
+                encryptedId                     // Column AC - Encrypted ID
             ]];
 
             await this.gapi.client.sheets.spreadsheets.values.update({
@@ -721,14 +732,8 @@ class RecruitmentApp {
         // Clear previous QR code
         qrContainer.innerHTML = '';
 
-        // Generate QR code with NIK data
-        const qrData = JSON.stringify({
-            nik: this.currentUser.nik,
-            nama: this.currentUser.nama,
-            jadwal: this.currentUser.jadwalTest,
-            lokasi: this.currentUser.lokasiTest,
-            generated: new Date().toISOString()
-        });
+        // Generate QR code with encrypted ID
+        const qrData = this.currentUser.encryptedId;
 
         if (typeof QRCode !== 'undefined') {
             try {
