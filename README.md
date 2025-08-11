@@ -184,4 +184,4 @@ MIT License - silakan gunakan dan modifikasi sesuai kebutuhan.
 
 ---
 
-**Dibuat untuk Sahabat Sehat Platform Recruitment** 
+**Dibuat untuk Sahabat Sehat Platform Recruitment**
